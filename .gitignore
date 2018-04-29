@@ -1,0 +1,24 @@
+# Intellij
+.idea/
+*.iml
+
+# Build files
+target/
+out/
+build/
+*.jar
+*.class
+
+# Scripts
+*.bat
+*.sh
+
+# Antlr
+gen/
+symbols/
+
+# Gradle
+.gradle
+
+
+node_modules
