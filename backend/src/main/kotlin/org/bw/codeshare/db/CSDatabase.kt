@@ -1,6 +1,7 @@
 package org.bw.codeshare.db
 
 import org.bw.codeshare.User
+import org.bw.codeshare.db.tables.Snippets
 import org.bw.codeshare.db.tables.Users
 import org.jetbrains.squash.connection.DatabaseConnection
 import org.jetbrains.squash.connection.transaction
@@ -17,7 +18,7 @@ class CSDatabase(val db: DatabaseConnection = H2Connection.createMemoryConnectio
 
     init {
         db.transaction {
-            databaseSchema().create(Users)
+            databaseSchema().create(Users, Snippets)
         }
     }
 
