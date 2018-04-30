@@ -11,6 +11,7 @@ import org.jetbrains.squash.query.from
 import org.jetbrains.squash.query.where
 import org.jetbrains.squash.results.get
 import org.jetbrains.squash.schema.create
+import org.jetbrains.squash.statements.deleteFrom
 import org.jetbrains.squash.statements.insertInto
 import org.jetbrains.squash.statements.values
 
@@ -31,6 +32,14 @@ class CSDatabase(val db: DatabaseConnection = H2Connection.createMemoryConnectio
             it[creationDate] = System.currentTimeMillis()
             it[lastLogin] = System.currentTimeMillis()
         }.execute()
+    }
+
+    fun createSnippet() = db.transaction {
+        // todo
+    }
+
+    fun deleteSnippet(id: Int) = db.transaction {
+        deleteFrom(Users).where(Snippets.id eq id).execute()
     }
 
     fun findByEmail(email: String) = db.transaction {
