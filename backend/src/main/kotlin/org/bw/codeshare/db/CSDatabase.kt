@@ -35,7 +35,17 @@ class CSDatabase(val db: DatabaseConnection = H2Connection.createMemoryConnectio
     fun findByEmail(email: String) = db.transaction {
         from(Users).where(Users.email eq email.toLowerCase()).execute()
                 .map {
-                    User(it[Users.id], email, it[Users.userName], it[Users.passwordHash])
+                    User(it[Users.id], email.toLowerCase(), it[Users.userName], it[Users.passwordHash])
                 }.singleOrNull()
+    }
+
+    fun getUser(email: String, passwordHash: String) = db.transaction {
+        from(Users).where {
+            Users.email eq email.toLowerCase()
+        }.where {
+            Users.passwordHash eq passwordHash
+        }.execute().map {
+            User(it[Users.id], email.toLowerCase(), it[Users.userName], it[Users.passwordHash])
+        }.singleOrNull()
     }
 }

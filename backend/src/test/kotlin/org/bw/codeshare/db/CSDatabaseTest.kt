@@ -21,4 +21,15 @@ class CSDatabaseTest {
         db.createUser(user)
         assertEquals(user, db.findByEmail("bradley.wood@uoit.net"))
     }
+
+    @Test
+    fun login() {
+        val user = User(0, "abc@def.com", "hi", "password")
+        db.createUser(user)
+        assertEquals(user, db.getUser("abc@def.com", "password"))
+        assertEquals(user, db.getUser("Abc@def.com", "password"))
+
+        assertNull(db.getUser("abc@def.com", "password1"))
+        assertNull(db.getUser("abc@def.com1", "password"))
+    }
 }
