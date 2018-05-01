@@ -56,4 +56,31 @@ class CSDatabaseTest {
         } catch (e: Exception) {
         }
     }
+
+    @Test
+    fun testDeleteSnippet() {
+        val user = User(100, "abc@def.com", "hi", "password")
+        db.createUser(user)
+
+        val snippet = Snippet(500, user.id, 0, 0, Privacy.PUBLIC, Privacy.OWNER, "Title", "Data")
+        db.createSnippet(snippet)
+
+        assertNotNull(db.findSnippetById(snippet.id))
+        db.deleteSnippet(500)
+
+        assertNull(db.findSnippetById(snippet.id))
+    }
+
+    @Test
+    fun testGetSnippet() {
+        val user = User(200, "abc@def.com", "hi", "password")
+        db.createUser(user)
+
+        val expiry: Long = 100
+
+        val snippet = Snippet(600, user.id, 0, expiry, Privacy.PUBLIC, Privacy.OWNER, "Title", "Data")
+        db.createSnippet(snippet)
+
+        assertNull(db.findSnippetById(snippet.id))
+    }
 }

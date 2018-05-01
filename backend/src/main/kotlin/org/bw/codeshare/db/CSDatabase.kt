@@ -64,7 +64,7 @@ class CSDatabase(val db: DatabaseConnection = H2Connection.createMemoryConnectio
             }.singleOrNull()
         }
 
-        if (snippet!!.expiryDate > 0 && System.currentTimeMillis() > snippet.expiryDate) {
+        if (snippet != null && snippet.expiryDate > 0 && System.currentTimeMillis() > snippet.expiryDate) {
             deleteSnippet(snippet.id)
             return null
         }
