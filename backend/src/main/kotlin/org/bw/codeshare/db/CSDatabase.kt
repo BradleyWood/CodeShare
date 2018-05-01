@@ -73,7 +73,7 @@ class CSDatabase(val db: DatabaseConnection = H2Connection.createMemoryConnectio
     }
 
     fun deleteSnippet(id: Int) = db.transaction {
-        deleteFrom(Users).where(Snippets.id eq id).execute()
+        deleteFrom(Snippets).where(Snippets.id eq id).execute()
     }
 
     fun findByEmail(email: String) = db.transaction {
