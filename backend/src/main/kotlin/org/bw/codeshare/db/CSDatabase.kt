@@ -57,15 +57,17 @@ class CSDatabase(val db: DatabaseConnection = H2Connection.createMemoryConnectio
     }
 
     fun findSnippetById(id: Int): Snippet? {
-        var snippet = db.transaction {
+        val snippet = db.transaction {
             from(Snippets).where(Snippets.id eq id).execute().map {
                 Snippet(id, it[owner], it[creationDate], it[expiryDate]
                         ?: -1, it[readRights], it[editRights], it[title], String(it[snippet].bytes))
             }.singleOrNull()
         }
 
-        if (snippet!!.expiryDate > 0 && System.currentTimeMillis() > snippet.expiryDate)
+        if (snippet!!.expiryDate > 0 && System.currentTimeMillis() > snippet.expiryDate) {
             deleteSnippet(snippet.id)
+            return null
+        }
 
         return snippet
     }
