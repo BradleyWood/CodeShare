@@ -1,8 +1,17 @@
 package org.bw.codeshare.db
 
+import org.bw.codeshare.Snippet
 import org.bw.codeshare.User
 import org.bw.codeshare.db.tables.Snippets
+import org.bw.codeshare.db.tables.Snippets.creationDate
+import org.bw.codeshare.db.tables.Snippets.editRights
+import org.bw.codeshare.db.tables.Snippets.expiryDate
+import org.bw.codeshare.db.tables.Snippets.owner
+import org.bw.codeshare.db.tables.Snippets.readRights
+import org.bw.codeshare.db.tables.Snippets.snippet
+import org.bw.codeshare.db.tables.Snippets.title
 import org.bw.codeshare.db.tables.Users
+import org.jetbrains.squash.connection.BinaryObject
 import org.jetbrains.squash.connection.DatabaseConnection
 import org.jetbrains.squash.connection.transaction
 import org.jetbrains.squash.dialects.h2.H2Connection
@@ -34,8 +43,31 @@ class CSDatabase(val db: DatabaseConnection = H2Connection.createMemoryConnectio
         }.execute()
     }
 
-    fun createSnippet() = db.transaction {
-        // todo
+    fun createSnippet(new_snippet_: Snippet) = db.transaction {
+        insertInto(Snippets).values {
+            it[id] = new_snippet_.id
+            it[owner] = new_snippet_.owner
+            it[creationDate] = System.currentTimeMillis()
+            it[expiryDate] = new_snippet_.expiryDate
+            it[readRights] = new_snippet_.readRights
+            it[editRights] = new_snippet_.editRights
+            it[title] = new_snippet_.title
+            it[snippet] = BinaryObject.fromByteArray(this@transaction, new_snippet_.snippet.toByteArray())
+        }.execute()
+    }
+
+    fun findSnippetById(id: Int): Snippet? {
+        var snippet = db.transaction {
+            from(Snippets).where(Snippets.id eq id).execute().map {
+                Snippet(id, it[owner], it[creationDate], it[expiryDate]
+                        ?: -1, it[readRights], it[editRights], it[title], String(it[snippet].bytes))
+            }.singleOrNull()
+        }
+
+        if (snippet!!.expiryDate > 0 && System.currentTimeMillis() > snippet.expiryDate)
+            deleteSnippet(snippet.id)
+
+        return snippet
     }
 
     fun deleteSnippet(id: Int) = db.transaction {
