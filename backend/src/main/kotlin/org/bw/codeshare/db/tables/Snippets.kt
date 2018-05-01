@@ -1,5 +1,6 @@
 package org.bw.codeshare.db.tables
 
+import org.bw.codeshare.Privacy
 import org.jetbrains.squash.definition.*
 
 object Snippets : TableDefinition() {
@@ -11,13 +12,6 @@ object Snippets : TableDefinition() {
     val editRights = privacy("edit_rights")
     val title = varchar("title", 256)
     val snippet = blob("snippet")
-}
-
-enum class Privacy {
-    PUBLIC,
-    ORG,
-    SPECIFIC_USERS,
-    OWNER
 }
 
 fun TableDefinition.privacy(name: String): ColumnDefinition<Privacy> {
